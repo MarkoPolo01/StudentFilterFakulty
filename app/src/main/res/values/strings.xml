@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">students</string>
+    <string name="del">del</string>
+    <string name="add">add</string>
+    <string name="next">next</string>
+    <string name="prev">prev</string>
+    <string name="change">change</string>
+    <string name="save">save</string>
+    <string name="back">back</string>
+    <string name="pre"><![CDATA[<]]></string>
+    <string name="nex"><![CDATA[>]]></string>
+    <string name="prex"><![CDATA[<]]></string>
+    <string name="nexti"><![CDATA[>]]></string>
+    <string name="addi">добавить</string>
+    <string name="deli">удалить</string>
+    <string name="changi">изменить</string>
+</resources>
