@@ -5,6 +5,11 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
+import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.util.*
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
@@ -37,10 +42,12 @@ class SaveActivity : AppCompatActivity() {
         val answerIntent = Intent()
         button_save.setOnClickListener{
             if (checkAllFields()){
+                val pattern = DateTimeFormatter.ofPattern("dd-MM-yyyy")
+                val d = LocalDate.parse(birth_day.text.toString(), pattern)
                 answerIntent.putExtra("first_name", first_name.text.toString())
                 answerIntent.putExtra("second_name", second_name.text.toString())
                 answerIntent.putExtra("last_name", last_name.text.toString())
-                answerIntent.putExtra("birth_day", birth_day.text.toString())
+                answerIntent.putExtra("birth_day", d.format(pattern))
                 answerIntent.putExtra("faculti", faculti.text.toString())
                 answerIntent.putExtra("grup", grup.text.toString())
                 setResult(RESULT_OK, answerIntent)
@@ -53,31 +60,33 @@ class SaveActivity : AppCompatActivity() {
     }
 
     private fun checkAllFields(): Boolean {
+        var f = true
         if(check(first_name.text.toString())){
             first_name.error = "Неправильно введены данные"
-            return false
+            f = false
         }
         if(check(second_name.text.toString())){
             second_name.error = "Неправильно введены данные"
-            return false
+            f = false
         }
         if(check(last_name.text.toString())){
             last_name.error = "Неправильно введены данные"
-            return false
+            f = false
         }
-        if(check3(birth_day.text.toString())){
-            birth_day.error ="Неправидьно введены данные"
-            return false
+        val date = check3(birth_day.text.toString())
+        if(date == null){
+            birth_day.error = "Введите дату в формате дд-мм-гггг"
+            f = false
         }
         if(check(faculti.text.toString())){
             faculti.error = "Неправильно введены данные"
-            return false
+            f = false
         }
         if(check2(grup.text.toString())){
             grup.error = "Неправильно введены данные"
-            return false
+            f = false
         }
-        return true
+        return f
     }
     private fun check(text:String):Boolean{
         return text == ""||
@@ -125,7 +134,7 @@ class SaveActivity : AppCompatActivity() {
                 text.contains("~")
     }
     private fun check2(text:String):Boolean{
-        return text == ""||
+        return text == "" ||
                 text.contains(".")||
                 text.contains("/")||
                 text.contains(",")||
@@ -159,29 +168,21 @@ class SaveActivity : AppCompatActivity() {
                 text.contains("`")||
                 text.contains("~")
     }
-//    private fun check3(text:String):Boolean{
-//        if(text.length != 11 ||!text.contains('-')) {
-//            return false
-//        } else {
-//            val year = text.split("-")[0].toInt()
-//            val month = text.split("-")[1].toInt()
-//            val day = text.split("-")[2].toInt()
-//
-//            if(year < 1000) {
-//                return false
-//            }
-//            if(month < 1 || month > 12) {
-//                return false
+//    private fun check3(text:String):Date?{
+//        val formatter = SimpleDateFormat("dd-mm-yyyy", Locale.US)
+//        return try {
+//            formatter.parse(text) as Date
+//        } catch (e: java.lang.Exception){
+//            null
 //        }
-//            if(day < 1 || day > 31) {
-//                return false
-//        }
-//            return true
-//
 //    }
-private fun check3(text:String):Boolean{
-    val pattern: Pattern = Pattern.compile("(0+[1-9]|[12][0-9]|3[01])-(0+[1-9]|1[012])-((19|20)\\d\\d)")
-    val matcher: Matcher = pattern.matcher(text)
-    return !matcher.find()
-}
+
+    private fun check3(text:String):LocalDate?{
+        val pattern = DateTimeFormatter.ofPattern("dd-MM-yyyy")
+        return try {
+            LocalDate.parse(text, pattern)
+        } catch (e: java.lang.Exception){
+            null
+        }
+    }
 }
